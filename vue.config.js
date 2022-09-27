@@ -1,4 +1,17 @@
-const { defineConfig } = require('@vue/cli-service')
-module.exports = defineConfig({
-  transpileDependencies: true
-})
+const ENV = process.env.NODE_ENV;
+module.exports = {
+    lintOnSave: ENV !== 'production',
+    publicPath: './',
+    productionSourceMap: false,
+    devServer: {
+        proxy: {
+            '/api': {
+                target: 'http://127.0.0.1:7000',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': ''
+                }
+            }
+        }
+    }
+};
