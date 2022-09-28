@@ -13,7 +13,7 @@
 <script>
 import { reactive, toRefs } from '@vue/reactivity'
 import { useRouter, useRoute } from 'vue-router'
-import { onBeforeMount } from '@vue/runtime-core'
+import { onBeforeMount, onBeforeUnmount, onUpdated } from '@vue/runtime-core'
 import api from '@/api/index.js'
 
 export default {
@@ -34,9 +34,33 @@ export default {
       let id = route.params.id
       let result = await api.queryNewsInfo(id)
       state.newsInfo = result
+      // 动态创建CSS
+      let link = document.createElement('link')
+      link.id = "link"
+      link.rel = "stylesheet"
+      link.href = state.newsInfo.css[0]
+      document.head.appendChild(link)
+
       let { comments, popularity } = await api.queryNewsStory(id)
       state.comments = comments
       state.popularity = popularity
+    })
+
+    // 组件销毁前移除动态创建的CSS，跳到其他组件它就不会生效
+    onBeforeUnmount(() => {
+      let link = document.querySelector('#link')
+      if(!link) return
+      document.head.removeChild(link)
+    })
+
+    // 第一次进来是获得数据，所以没数据，获得数据更新以后才拿到图片，所以要在第一次更新以后插入图片
+    onUpdated(() => {
+      let imgPlaceHolder = document.querySelector(".img-place-holder");
+      if (imgPlaceHolder) {
+        if (imgPlaceHolder.innerHTML.trim() === "") {
+          imgPlaceHolder.innerHTML += `<img src="${state.newsInfo.image}" alt=""/>`;
+        }
+      }
     })
 
     return {
