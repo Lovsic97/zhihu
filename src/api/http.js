@@ -47,7 +47,7 @@ axios.interceptors.response.use(response => {
 }, reason => {
     Notify({
         type: 'danger',
-        message: '小主,当前网络繁忙,请稍后再试!'
+        message: '当前网络繁忙,请稍后再试!'
     });
     return Promise.reject(reason);
 });
