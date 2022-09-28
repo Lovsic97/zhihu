@@ -1,0 +1,44 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "200967",
+      "name": "3.1点赞",
+      "font_class": "31dianzan",
+      "unicode": "f01b8",
+      "unicode_decimal": 983480
+    },
+    {
+      "icon_id": "667792",
+      "name": "评论",
+      "font_class": "pinglun",
+      "unicode": "e6ad",
+      "unicode_decimal": 59053
+    },
+    {
+      "icon_id": "5387655",
+      "name": "收藏",
+      "font_class": "shoucang",
+      "unicode": "eb26",
+      "unicode_decimal": 60198
+    },
+    {
+      "icon_id": "9526755",
+      "name": "左箭头",
+      "font_class": "zuojiantou",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "10157619",
+      "name": "转发",
+      "font_class": "zhuanfa",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    }
+  ]
+}

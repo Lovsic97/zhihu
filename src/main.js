@@ -7,6 +7,9 @@ import Vant, { Lazyload } from 'vant'
 import './assets/reset.min.css'
 import 'amfe-flexible'
 import 'vant/lib/index.css'
+/* 导入iconfont的样式 */
+import "@/assets/font/iconfont.css";
+
 /* 处理最大宽度 */
 import { handleMaxWidth } from './assets/utils'
 handleMaxWidth()
