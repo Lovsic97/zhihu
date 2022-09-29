@@ -14,9 +14,10 @@
 </template>
 
 <script>
-import { computed, reactive, toRefs } from '@vue/runtime-core';
+import { computed } from '@vue/runtime-core';
 import { formatTime } from '@/assets/utils';
 import timg from '@/assets/images/timg.jpg'
+import { useStore } from 'vuex';
 
 export default {
   name: 'Head',
@@ -27,8 +28,11 @@ export default {
     }
   },
   setup(props) {
-    let state = reactive({
-      pic: timg,
+    const store = new useStore()
+    let pic = computed(() => {
+      let { isLogin, info } = store.state
+      if(isLogin && info) return info.pic || timg
+      return timg
     })
     
     let timeNow = computed(() => {
@@ -43,7 +47,7 @@ export default {
 
     return {
       timeNow,
-      ...toRefs(state)
+      pic
     }
   }
 }
