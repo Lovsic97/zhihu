@@ -51,6 +51,7 @@ export default {
         return axios.get('/api/user_info');
     },
     // 修改用户信息
+    // multipart/form-data ： 需要在表单中进行文件上传时，就需要使用该格式，这里上传了用户名和头像
     userUpdate(username, file) {
         let fm = new FormData();
         fm.append("username", username);

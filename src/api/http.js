@@ -23,12 +23,16 @@ axios.defaults.transformRequest = data => {   //qs是第三方库，转换为x-w
  * config :发起请求的请求配置项
  */
 axios.interceptors.request.use(config => {
-    // 针对于部分接口，我们携带令牌和签名信息
+    // 针对于部分接口，我们携带token令牌和sign签名信息
     let apiList = ['/check_login', '/user_info', '/user_update', '/store', '/store_remove', '/store_list'],
         token = localStorage.getItem('token');
+    // config.url里拿到的是当前请求的接口，比如/api/check_login
+    // 所以我们获取到它并去除/api，然后把获取的跟apiList中的进行对比就能知道当前请求是否需要使用token
     if (apiList.includes(config.url.replace('/api', '')) && token) {
+        // 确定了该请求需要发送token并且token存在，则获得当前时间生成时间戳，并且加密生成sign
         let time = +new Date(),
             sign = md5(`${token}@${time}@zhufeng`);
+        // 给请求头添加信息
         config.headers['authorzation'] = token;
         config.headers['time'] = time;
         config.headers['sign'] = sign;
