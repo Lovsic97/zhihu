@@ -5,7 +5,8 @@ const env = process.env.NODE_ENV
 export default createStore({
   state: {
     isLogin: null,   // 是否登录
-    info: null   // 当前用户基本信息
+    info: null,   // 当前用户基本信息
+    storeList: null  // 当前用户收藏信息
   },
   mutations: {
     changeIsLogin(state, bool) {
@@ -13,6 +14,15 @@ export default createStore({
     },
     changeInfo(state, payload) {
       state.info = payload
+    },
+    changeStoreList(state, payload) {
+      state.storeList = payload
+    },
+    removeStoreList(state, id) {
+      if (state.storeList === null) return;
+      state.storeList = state.storeList.filter(item => {
+        return +item.id !== +id;
+      });
     }
   },
   actions: {
@@ -27,7 +37,11 @@ export default createStore({
       if(+code === 0) {
         commit('changeInfo', data)
       }
-
+    },
+    async changeStoreListAsync({ commit }) {
+      let { code, data } = await api.storeList();
+      if (+code !== 0) data = [];
+      commit('changeStoreList', data);
     }
   },
   plugins:env==='production' ? [] : [createLogger()]

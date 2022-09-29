@@ -5,7 +5,11 @@
     <van-icon name="arrow-left" @click="handle"></van-icon>
     <van-icon name="comment-o" :badge="comments"></van-icon>
     <van-icon name="good-job-o" :badge="popularity"></van-icon>
-    <van-icon name="star-o" color="#1989fa"></van-icon>
+    <van-icon 
+      name="star-o" 
+      :color="isStore ? '#1989fa' : '#000'" 
+      @click="storeHandle">
+    </van-icon>
     <van-icon name="share-o" color="#ccc"></van-icon>
   </div>
 </template>
@@ -14,7 +18,10 @@
 import { reactive, toRefs } from '@vue/reactivity'
 import { useRouter, useRoute } from 'vue-router'
 import { onBeforeMount, onBeforeUnmount, onUpdated } from '@vue/runtime-core'
+import { useStore } from 'vuex'
+import { Toast } from 'vant'
 import api from '@/api/index.js'
+import { computed } from '@vue/reactivity'
 
 export default {
   name: 'Detail',
@@ -24,10 +31,46 @@ export default {
       popularity: 0,
       newsInfo: null
     })
+
     const router = new useRouter()
     const route = new useRoute()
     const handle = () => {
       router.back()
+    }
+
+    // 点击收藏变色，如果变色就无法使用
+    let isStore = computed(() => {
+      let { isLogin, storeList } = store.state;
+      if (isLogin) {
+        if (!Array.isArray(storeList)) storeList = [];
+        return storeList.some((item) => {
+          return +item.news.id === +route.params.id;
+        });
+      }
+      return false;
+    });
+
+    // 点击收藏
+    const store = new useStore()
+    const storeHandle = async () => {
+      if (!store.state.isLogin) {
+        Toast("请先登录！");
+        router.push({
+          path: "/login",
+          query: {
+            from: `detail/${route.params.id}`,
+          },
+        });
+        return;
+      }
+      if (isStore.value) return;
+      let { code } = await api.store(route.params.id)
+      if(+code !== 0) {
+        Toast("很遗憾，收藏失败!");
+        return;
+      }
+      Toast("恭喜您，收藏成功！");
+      store.dispatch("changeStoreListAsync");
     }
 
     onBeforeMount(async () => {
@@ -65,7 +108,9 @@ export default {
 
     return {
       ...toRefs(state),
-      handle
+      handle,
+      storeHandle,
+      isStore
     }
   }
 }
